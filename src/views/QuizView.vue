@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { getMaterial, getQuestions } from '../data'
 import { parsePipeTable } from '../utils/markdownTable'
+import { renderOverlineHtml } from '../utils/overline'
 
 const props = defineProps({
   standardId: { type: String, required: true },
@@ -67,17 +68,17 @@ function restart() {
 
   <template v-else-if="current">
     <p class="progress">{{ index + 1 }} / {{ questions.length }}</p>
-    <h1 class="question">{{ current.문제 }}</h1>
+    <h1 class="question" v-html="renderOverlineHtml(current.문제)"></h1>
 
     <table v-if="currentTable" class="q-table">
       <thead>
         <tr>
-          <th v-for="(h, hi) in currentTable.headers" :key="hi">{{ h }}</th>
+          <th v-for="(h, hi) in currentTable.headers" :key="hi" v-html="renderOverlineHtml(h)"></th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(row, ri) in currentTable.rows" :key="ri">
-          <td v-for="(cell, ci) in row" :key="ci">{{ cell }}</td>
+          <td v-for="(cell, ci) in row" :key="ci" v-html="renderOverlineHtml(cell)"></td>
         </tr>
       </tbody>
     </table>
@@ -97,7 +98,7 @@ function restart() {
           @click="choose(key)"
         >
           <span class="option-key">{{ key }}</span>
-          <span>{{ text }}</span>
+          <span v-html="renderOverlineHtml(text)"></span>
         </button>
       </li>
     </ul>
@@ -107,7 +108,7 @@ function restart() {
         {{ Number(selected) === current.정답 ? '정답입니다' : '오답입니다' }}
         (정답: {{ current.정답 }}번)
       </p>
-      <p>{{ current.해설 }}</p>
+      <p v-html="renderOverlineHtml(current.해설)"></p>
       <button class="primary-btn" @click="next">
         {{ index < questions.length - 1 ? '다음 문제' : '결과 보기' }}
       </button>
@@ -134,6 +135,14 @@ function restart() {
   font-size: 18px;
   line-height: 1.5;
   margin-bottom: 16px;
+}
+
+.question :deep(.bar),
+.q-table :deep(.bar),
+.options :deep(.bar),
+.explanation :deep(.bar) {
+  text-decoration: overline;
+  text-decoration-thickness: 1px;
 }
 
 .q-table {

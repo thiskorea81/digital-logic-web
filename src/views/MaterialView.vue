@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { getMaterial, getQuestions, units } from '../data'
 import { parsePipeTable } from '../utils/markdownTable'
+import { renderOverlineHtml } from '../utils/overline'
 
 const props = defineProps({
   standardId: { type: String, required: true },
@@ -47,19 +48,19 @@ function sectionTable(s) {
       </div>
       <section class="section" :class="{ advanced: s.advanced }">
         <h2>
-          {{ s.heading }}
+          <span v-html="renderOverlineHtml(s.heading)"></span>
           <span v-if="s.advanced" class="advanced-badge">심화</span>
         </h2>
-        <p class="content">{{ s.content }}</p>
+        <p class="content" v-html="renderOverlineHtml(s.content)"></p>
         <table v-if="sectionTable(s)" class="section-table">
           <thead>
             <tr>
-              <th v-for="(h, hi) in sectionTable(s).headers" :key="hi">{{ h }}</th>
+              <th v-for="(h, hi) in sectionTable(s).headers" :key="hi" v-html="renderOverlineHtml(h)"></th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(row, ri) in sectionTable(s).rows" :key="ri">
-              <td v-for="(cell, ci) in row" :key="ci">{{ cell }}</td>
+              <td v-for="(cell, ci) in row" :key="ci" v-html="renderOverlineHtml(cell)"></td>
             </tr>
           </tbody>
         </table>
@@ -169,6 +170,13 @@ h1 {
   white-space: pre-wrap;
   line-height: 1.75;
   margin-bottom: 12px;
+}
+
+.section h2 :deep(.bar),
+.content :deep(.bar),
+.section-table :deep(.bar) {
+  text-decoration: overline;
+  text-decoration-thickness: 1px;
 }
 
 .section-table {
