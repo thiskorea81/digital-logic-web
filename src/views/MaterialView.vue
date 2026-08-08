@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { getMaterial, getQuestions, units } from '../data'
 import { parsePipeTable } from '../utils/markdownTable'
-import { renderOverlineHtml } from '../utils/overline'
+import { renderOverlineHtml, renderRichText } from '../utils/richText'
 
 const props = defineProps({
   standardId: { type: String, required: true },
@@ -51,7 +51,7 @@ function sectionTable(s) {
           <span v-html="renderOverlineHtml(s.heading)"></span>
           <span v-if="s.advanced" class="advanced-badge">심화</span>
         </h2>
-        <p class="content" v-html="renderOverlineHtml(s.content)"></p>
+        <p class="content" v-html="renderRichText(s.content, 'highlight')"></p>
         <table v-if="sectionTable(s)" class="section-table">
           <thead>
             <tr>
@@ -177,6 +177,12 @@ h1 {
 .section-table :deep(.bar) {
   text-decoration: overline;
   text-decoration-thickness: 1px;
+}
+
+.content :deep(mark.cloze) {
+  background: none;
+  color: var(--accent);
+  font-weight: 700;
 }
 
 .section-table {

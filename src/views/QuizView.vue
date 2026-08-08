@@ -2,7 +2,9 @@
 import { computed, ref } from 'vue'
 import { getMaterial, getQuestions } from '../data'
 import { parsePipeTable } from '../utils/markdownTable'
-import { renderOverlineHtml } from '../utils/overline'
+import { renderOverlineHtml } from '../utils/richText'
+import { recordAttempt, addWrongNote } from '../services/storage'
+import AiSimilarQuestion from '../components/AiSimilarQuestion.vue'
 
 const props = defineProps({
   standardId: { type: String, required: true },
@@ -24,7 +26,20 @@ function choose(optionKey) {
   if (revealed.value) return
   selected.value = optionKey
   revealed.value = true
-  if (Number(optionKey) === current.value.정답) correctCount.value += 1
+  const isCorrect = Number(optionKey) === current.value.정답
+  if (isCorrect) correctCount.value += 1
+  recordAttempt(props.standardId, current.value.id, isCorrect)
+  if (!isCorrect) {
+    addWrongNote({
+      standardId: props.standardId,
+      questionId: current.value.id,
+      문제: current.value.문제,
+      선택한답: current.value.선택지?.[optionKey] ?? String(optionKey),
+      정답: current.value.선택지?.[current.value.정답] ?? String(current.value.정답),
+      해설: current.value.해설,
+      source: 'quiz',
+    })
+  }
 }
 
 function next() {
@@ -112,6 +127,8 @@ function restart() {
       <button class="primary-btn" @click="next">
         {{ index < questions.length - 1 ? '다음 문제' : '결과 보기' }}
       </button>
+
+      <AiSimilarQuestion :standard-id="standardId" :base-question="current" />
     </div>
   </template>
 </template>

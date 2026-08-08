@@ -1,5 +1,14 @@
 <script setup>
 import { units } from '../data'
+import { getProgress } from '../services/storage'
+
+const progress = getProgress()
+
+function chip(standardId) {
+  const p = progress[standardId]
+  if (!p) return null
+  return `${p.correct}/${p.attempts}`
+}
 </script>
 
 <template>
@@ -8,6 +17,12 @@ import { units } from '../data'
     자료를 먼저 읽고, 관련 문제로 이해도를 점검해 보세요.
   </p>
 
+  <nav class="quick-links">
+    <RouterLink to="/dashboard">📊 학습 현황·오답노트</RouterLink>
+    <RouterLink to="/print">🖨️ 인쇄용 학습지</RouterLink>
+    <RouterLink to="/settings">⚙️ 설정 (AI 키·백업)</RouterLink>
+  </nav>
+
   <section v-for="unit in units" :key="unit.단원" class="unit">
     <h2>{{ unit.단원 }}</h2>
     <ul class="standard-list">
@@ -15,6 +30,7 @@ import { units } from '../data'
         <RouterLink :to="{ name: 'material', params: { standardId: s.standard_id } }" class="standard-link">
           <span class="std-id">{{ s.standard_id.replace('디논 ', '') }}</span>
           <span class="std-title">{{ s.title }}</span>
+          <span v-if="chip(s.standard_id)" class="std-chip">{{ chip(s.standard_id) }}</span>
         </RouterLink>
       </li>
     </ul>
@@ -25,7 +41,28 @@ import { units } from '../data'
 .intro {
   color: var(--text-dim);
   line-height: 1.7;
-  margin-bottom: 32px;
+  margin-bottom: 20px;
+}
+
+.quick-links {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.quick-links a {
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  text-decoration: none;
+  color: var(--text);
+  font-size: 13px;
+}
+
+.quick-links a:hover {
+  border-color: var(--accent-border);
+  background: var(--accent-bg);
 }
 
 .unit {
@@ -75,5 +112,14 @@ import { units } from '../data'
 
 .std-title {
   font-size: 14px;
+  flex: 1;
+}
+
+.std-chip {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
 }
 </style>
