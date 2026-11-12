@@ -1,10 +1,22 @@
 <script setup>
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
+// 위쪽 메뉴: 학습자료 · 평가 · 오답노트
+const section = computed(() =>
+  ['quiz-home', 'quiz', 'question'].includes(route.name) ? 'quiz' : route.name === 'wrong' ? 'wrong' : 'materials'
+)
 </script>
 
 <template>
   <header class="site-header">
     <RouterLink to="/" class="brand">디지털논리회로 학습노트</RouterLink>
-    <span class="tagline">학습자료 &amp; 자가 진단 문제</span>
+    <nav class="main-nav">
+      <RouterLink to="/" :class="{ on: section === 'materials' }">학습자료</RouterLink>
+      <RouterLink :to="{ name: 'quiz-home' }" :class="{ on: section === 'quiz' }">평가</RouterLink>
+      <RouterLink :to="{ name: 'wrong' }" :class="{ on: section === 'wrong' }">오답노트</RouterLink>
+    </nav>
   </header>
   <main class="site-main">
     <RouterView />
@@ -25,6 +37,8 @@
   --accent-bg: #eef0fb;
   --accent-border: #c7ccf5;
   --code-bg: #f4f3ec;
+  --ok: #4caf7d;
+  --bad: #e5566e;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -72,9 +86,28 @@ a {
   color: var(--text);
 }
 
-.tagline {
-  font-size: 13px;
+.main-nav {
+  display: flex;
+  gap: 4px;
+  align-self: center;
+}
+
+.main-nav a {
+  padding: 6px 12px;
+  border-radius: 999px;
   color: var(--text-dim);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.main-nav a:hover {
+  color: var(--accent);
+}
+
+.main-nav a.on {
+  color: var(--accent);
+  background: var(--accent-bg);
 }
 
 .site-main {

@@ -105,7 +105,7 @@ export function unlockPrint() {
 }
 
 // ---- 내보내기 / 불러오기 ----
-const EXPORT_KEYS = ['apiKeys', 'aiSettings', 'progress', 'wrongNotes', 'aiQuestions']
+const EXPORT_KEYS = ['apiKeys', 'aiSettings', 'progress', 'wrongNotes', 'aiQuestions', 'answers', 'confused', 'subunits']
 
 export function exportAllData() {
   const data = {}
@@ -131,3 +131,7 @@ export function importAllData(payload) {
 export function clearAllData() {
   for (const k of EXPORT_KEYS) localStorage.removeItem(PREFIX + k)
 }
+
+// ---- 문제 골라 풀기(progress.js)가 쓰는 저수준 읽기/쓰기(같은 prefix) ----
+export const readKey = read
+export const writeKey = write

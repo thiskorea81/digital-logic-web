@@ -46,7 +46,7 @@
     {
       "heading": "파이썬으로 게이트 진리표 재현하기",
       "content": "지금까지 정리한 6가지 게이트(AND, OR, NAND, NOR, XOR, XNOR)를 파이썬 함수로 옮긴 다음, 위에서 본 진리표(A,B가 00→01→10→11 순서로 바뀔 때의 출력)와 실제로 맞아떨어지는지 확인한다.",
-      "code": "from itertools import product\n\ngates = {\n    \"AND\":  lambda a, b: a & b,\n    \"OR\":   lambda a, b: a | b,\n    \"NAND\": lambda a, b: 1 - (a & b),\n    \"NOR\":  lambda a, b: 1 - (a | b),\n    \"XOR\":  lambda a, b: a ^ b,\n    \"XNOR\": lambda a, b: 1 - (a ^ b),\n}\n\nfor name, gate in gates.items():\n    outputs = [gate(a, b) for a, b in product([0, 1], repeat=2)]\n    print(f\"{name} (A,B=00,01,10,11 순):\", outputs)\n\nNOT = lambda a: 1 - a\nprint(\"NOT (A=0,1 순):\", [NOT(a) for a in [0, 1]])\n"
+      "code": "from itertools import product\n\ngates = {\n    \"AND\":  lambda a, b: a & b,\n    \"OR\":   lambda a, b: a | b,\n    \"NAND\": lambda a, b: 1 - (a & b),\n    \"NOR\":  lambda a, b: 1 - (a | b),\n    \"XOR\":  lambda a, b: a ^ b,\n    \"XNOR\": lambda a, b: 1 - (a ^ b),\n}\n\nfor name, gate in gates.items():\n    outputs = [gate(a, b)\n               for a, b in product([0, 1], repeat=2)]\n    print(f\"{name} (A,B=00,01,10,11 순):\", outputs)\n\nNOT = lambda a: 1 - a\nprint(\"NOT (A=0,1 순):\", [NOT(a) for a in [0, 1]])\n"
     },
     {
       "heading": "정리",

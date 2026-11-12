@@ -32,7 +32,7 @@
     {
       "heading": "파이썬으로 순서 논리 회로의 특징 확인하기",
       "content": "순서 논리 회로의 핵심은 '같은 입력이라도 기억된 상태에 따라 출력이 달라질 수 있다'는 데 있다. 아래 코드는 조합 논리 회로(입력에만 의존)와 순서 논리 회로(입력과 이전 상태에 함께 의존)를 함수로 각각 구현해, 똑같이 x=1을 넣어도 순서 논리 회로에서는 이전 상태에 따라 출력이 달라짐을 직접 확인한다.",
-      "code": "def combinational(x):\n    return x  # 조합 논리 회로: 오직 현재 입력에만 의존\n\ndef sequential_next(x, state):\n    # 순서 논리 회로 예시: 입력 x가 1일 때만 상태를 반전(toggle)한다.\n    return state ^ x if x else state\n\nassert combinational(1) == combinational(1) == 1\nprint(\"조합 논리 회로: 입력 x=1 -> 출력은 항상 1 (이전 상태와 무관)\")\n\nstate_a, state_b = 0, 1\nout_a = sequential_next(1, state_a)\nout_b = sequential_next(1, state_b)\nassert out_a != out_b\nprint(f\"순서 논리 회로: 같은 입력 x=1 이라도 이전 상태가 {state_a}면 출력 {out_a}, {state_b}면 출력 {out_b}\")\n\n# 클록마다 입력이 순차적으로 들어올 때 상태가 어떻게 누적되는지 확인\nstate = 0\nhistory = []\nfor x in [1, 0, 1, 1, 0]:\n    state = sequential_next(x, state)\n    history.append(state)\nprint(\"클록마다 순차적으로 바뀐 상태 이력:\", history)\n"
+      "code": "def combinational(x):\n    return x  # 조합 논리 회로: 오직 현재 입력에만 의존\n\ndef sequential_next(x, state):\n    # 순서 논리 회로 예시: 입력 x가 1일 때만 상태를 반전(toggle)한다.\n    return state ^ x if x else state\n\nassert combinational(1) == combinational(1) == 1\nprint(\"조합 논리 회로: 입력 x=1 -> 출력은 항상 1 (이전 상태와 무관)\")\n\nstate_a, state_b = 0, 1\nout_a = sequential_next(1, state_a)\nout_b = sequential_next(1, state_b)\nassert out_a != out_b\nprint(f\"순서 논리 회로: 같은 입력 x=1 이라도 \"\n      f\"이전 상태가 {state_a}면 출력 {out_a}, \"\n      f\"{state_b}면 출력 {out_b}\")\n\n# 클록마다 입력이 순차적으로 들어올 때 상태가 어떻게 누적되는지 확인\nstate = 0\nhistory = []\nfor x in [1, 0, 1, 1, 0]:\n    state = sequential_next(x, state)\n    history.append(state)\nprint(\"클록마다 순차적으로 바뀐 상태 이력:\", history)\n"
     },
     {
       "heading": "정리",

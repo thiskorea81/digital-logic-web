@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { getMaterial, getQuestions, units } from '../data'
+import { getMaterial, getQuestions, units, unitNoOf } from '../data'
 import { parsePipeTable } from '../utils/markdownTable'
 import { renderOverlineHtml, renderRichText } from '../utils/richText'
 
@@ -74,7 +74,7 @@ function sectionTable(s) {
 
     <RouterLink
       v-if="questionCount > 0"
-      :to="{ name: 'quiz', params: { standardId: material.standard_id } }"
+      :to="{ name: 'quiz', params: { unitNo: unitNoOf(material.standard_id) }, query: { std: material.standard_id } }"
       class="practice-link"
     >
       관련 문제 풀어보기 ({{ questionCount }}문항) →

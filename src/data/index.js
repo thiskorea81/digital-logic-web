@@ -49,3 +49,36 @@ export function getQuestions(standardId) {
 export function allMaterialsFlat() {
   return materials
 }
+
+// ---- 문제 골라 풀기(정보ON 방식): 단원 번호(디논 01-02 → '01')로 묶고, 문항의 소단원으로 고른다 ----
+export function unitNoOf(standardId) {
+  return standardId.replace(/[^0-9]/g, '').slice(0, 2)
+}
+for (const u of units) u.no = unitNoOf(u.standards[0].standard_id)
+
+export function getUnit(unitNo) {
+  return units.find((u) => u.no === unitNo) ?? null
+}
+
+// 단원의 문항(성취기준 순서대로)
+export function getReviewQuestions(unitNo) {
+  return getUnit(unitNo)?.standards.flatMap((s) => getQuestions(s.standard_id)) ?? []
+}
+
+const questionIndex = new Map()
+for (const u of units) {
+  getReviewQuestions(u.no).forEach((q, index) => questionIndex.set(q.id, { q, unitNo: u.no, index }))
+}
+
+export function getQuestion(id) {
+  return questionIndex.get(id) ?? null
+}
+
+export function subunitOf(q) {
+  return q.소단원 || getMaterial(q.standard_id)?.title || '기타'
+}
+
+export function subunitsOf(unitNo) {
+  const names = [...new Set(getReviewQuestions(unitNo).map(subunitOf))]
+  return names.sort((a, b) => (a === '기타') - (b === '기타') || a.localeCompare(b, 'ko', { numeric: true }))
+}
